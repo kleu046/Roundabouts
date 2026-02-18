@@ -53,9 +53,9 @@ def draw_folium_maps(row, refresh_key, style):
     st_folium(m, width='100%', height=450, key=refresh_key)
 
     # hard coded new lines <br>
-    row_names = re.sub(r'\.', '<br>', row.name2)
+    row_names = re.sub(r'\.', '', row.name2)
     # row_names = re.sub(r'<br>$', '', row_names)
-    st.markdown(f"<div style='text-align: center; font-weight: 150'>{row_names}</div><div style='text-align: center; font-size: 24px; font-weight: bold;'>{row.town_city}</div><br><div style='text-align: center; font-size: 20px; font-weight: 100;  font-style: italic;'>{row.country}</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='text-align: center; font-weight: 150'>{row_names}</div><br><div style='text-align: center; font-size: 24px; font-weight: bold;'>{row.town_city}</div><div style='text-align: center; font-size: 20px; font-weight: 100;  font-style: italic;'>{row.country}</div>", unsafe_allow_html=True)
 
 def tidy_data(df) -> pd.DataFrame:
     df['name2'] = df['name'].str.replace('\\s/\\s', '<br>', regex=True)
