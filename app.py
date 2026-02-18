@@ -40,15 +40,26 @@ def draw_folium_maps(row, refresh_key, style):
             style="font-size: 10px;")
     ).add_to(m)
 
-    st.markdown("""
-    <style>
-    iframe {
-        border-radius: 50% !important;
-        overflow: hidden;
-        border: 3px solid #1f77b4 !important;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+    if row.name2 == 'Place Charles de Gaulle':
+        st.markdown("""
+        <style>
+        iframe {
+            border-radius: 50% !important;
+            overflow: hidden;
+            border: 10px solid #ff0000 !important;
+        }
+        </style>
+        """, unsafe_allow_html=True)    
+    else:
+        st.markdown("""
+        <style>
+        iframe {
+            border-radius: 50% !important;
+            overflow: hidden;
+            border: 3px solid #1f77b4 !important;
+        }
+        </style>
+        """, unsafe_allow_html=True)
 
     st_folium(m, width='100%', height=450, key=refresh_key)
 
