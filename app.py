@@ -50,6 +50,7 @@ def draw_folium_maps(row, refresh_key, style):
         }
         </style>
         """, unsafe_allow_html=True)    
+        st.markdown("<div style='color: red;'>You found it!</div>", unsafe_allow_html=True)
     else:
         st.markdown("""
         <style>
@@ -60,7 +61,6 @@ def draw_folium_maps(row, refresh_key, style):
         }
         </style>
         """, unsafe_allow_html=True)
-        st.markdown("<div style='color: red;'>You found it!</div>", unsafe_allow_html=True)
 
     st_folium(m, width='100%', height=450, key=refresh_key)
 
