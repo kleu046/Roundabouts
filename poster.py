@@ -1,0 +1,108 @@
+
+import pickle
+import pandas as pd
+import streamlit as st
+
+import plotly.express as px
+
+import folium
+from streamlit_folium import st_folium
+
+from my_colors import MyColors
+
+def load_data(file_name):
+    with open(file_name, 'rb') as f:
+        data = pickle.load(f)
+    return data
+
+def draw_folium_maps(ncols, df):
+    maps = st.columns(ncols)
+
+    for i in range(ncols):
+        with maps[i]:
+            row = pd.DataFrame(df.iloc[i,:]).T
+
+            m = folium.Map(
+                location=[row.long, row.lat],
+                zoom_start=16,
+                tiles = 'OpenStreetMap',
+                # tiles='OpenTopoMap',
+                # tiles = 'CartoDB positron',
+                # tiels = 'Esri WorldStreetMap',
+                dragging=False,
+                zoom_control=False,
+                scrollWheelZoom=False,
+                doubleClickZoom=False,
+                attributionControl=False,
+                control_scale=False,
+            )
+
+            folium.CircleMarker(
+                location=[row.long, row.lat],
+                radius=10,
+                color=MyColors.lines[0],
+                fill=True,
+                tooltip=folium.Tooltip(
+                    f"Approaches: {row.approaches.iloc[0]}<br>Lane(s): {row.lane_type.iloc[0]}<br>Controls: {row.control_type.iloc[0]}", 
+                    # f"Approaches={row.approaches.iloc[0]}<br>Type={row.lane_type.iloc[0]}", 
+                    style="font-size: 10px;")
+            ).add_to(m)
+
+            st.markdown("""
+            <style>
+            iframe {
+                border-radius: 50%;
+                overflow: hidden;
+            }
+            </style>
+            """, unsafe_allow_html=True)
+
+            st_folium(m, width='100%', height=350)
+
+            # hard coded new lines <br>
+            n = len(list(row.name2.str.findall('\.'))[0])
+            n = n if n > 1 and n < 6 else -1
+            newlines = '<br>'*(6-n) if n != -1 else ''
+            st.markdown(f"<div style='text-align: center; font-weight: 150'>{row.name2.iloc[0]+newlines}</div><br><div style='text-align: center; font-size: 24px; font-weight: bold;'>{row.town_city.iloc[0]}</div><br><div style='text-align: center; font-size: 20px; font-weight: 100;  font-style: italic;'>{row.country.iloc[0]}</div>", unsafe_allow_html=True)
+
+def tidy_data(df) -> pd.DataFrame:
+    df['name2'] = df['name'].str.replace('\\s/\\s', '<br>', regex=True)
+    df['lane_type'] = df['lane_type'].str.replace(', unspecified)', '', regex=False)
+    df['lane_type'] = df['lane_type'].str.replace(')', '', regex=False)
+    df['lane_type'] = df['lane_type'].str.replace('Multilane (', '', regex=False)
+    df['lane_type'] = df['lane_type'].str.replace('2 Lane', 'Two-lane', regex=False)
+    return df
+
+def load_css():
+    with open("styles.css") as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+
+# Data - Auckland
+akld = load_data('akld.pickle')
+akld = tidy_data(akld)
+alkd_ncols = akld.shape[0]
+
+# Data - World
+world = load_data('world.pickle')
+world = tidy_data(world)
+world_ncols = world.shape[0]
+
+st.set_page_config(layout="wide")
+
+load_css()
+
+st.title("Complex Roundabouts (With 5 Approaches) In Auckland Vs More Complex Examples Around the World")
+
+st.markdown(f"There are {alkd_ncols} roundabouts with 5 approaches/exits in Auckland.")
+
+draw_folium_maps(alkd_ncols, akld)
+
+st.markdown("")
+st.markdown("")
+st.markdown("")
+st.markdown("")
+st.markdown("")
+st.markdown(f"Examples of other complex roundabouts around the world.")
+
+draw_folium_maps(world_ncols, world)
