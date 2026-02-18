@@ -8,7 +8,6 @@ import plotly.express as px
 import folium
 from streamlit_folium import st_folium
 
-from css_style import get_style
 from my_colors import MyColors
 
 def load_data(file_name):
@@ -52,7 +51,7 @@ def draw_folium_maps(ncols, df):
             st.markdown("""
             <style>
             iframe {
-                border-radius: 40%;
+                border-radius: 50%;
                 overflow: hidden;
             }
             </style>
@@ -74,6 +73,11 @@ def tidy_data(df) -> pd.DataFrame:
     df['lane_type'] = df['lane_type'].str.replace('2 Lane', 'Two-lane', regex=False)
     return df
 
+def load_css():
+    with open("styles.css") as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+
 # Data - Auckland
 akld = load_data('akld.pickle')
 akld = tidy_data(akld)
@@ -86,14 +90,19 @@ world_ncols = world.shape[0]
 
 st.set_page_config(layout="wide")
 
-# st.markdown(get_style(), unsafe_allow_html=True)
+load_css()
 
-st.title("Roundabouts With 5 Approaches In Auckland Vs More Complex Roundabouts Around the World")
+st.title("Complex Roundabouts (With 5 Approaches) In Auckland Vs More Complex Examples Around the World")
 
 st.markdown(f"There are {alkd_ncols} roundabouts with 5 approaches/exits in Auckland.")
 
 draw_folium_maps(alkd_ncols, akld)
 
-draw_folium_maps(world_ncols, world)
+st.markdown("")
+st.markdown("")
+st.markdown("")
+st.markdown("")
+st.markdown("")
+st.markdown(f"Examples of other complex roundabouts around the world.")
 
-####
+draw_folium_maps(world_ncols, world)
