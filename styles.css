@@ -18,8 +18,19 @@ div {
 .stSidebar {
     background-color: #f0f6ff !important;
 }
+.stSidebar .stButton button {
+    background-color: #245693 !important;
+    color: #f0f6ff !important;
+}
 .stAppHeader {
     background-color: #f0f6ff !important;
+    color: #245693 !important;
+}
+.stButton button {
+    background-color: #245693 !important; /* button fill */
+    color: #f0f6ff !important;           /* text color */
+    border-radius: 8px !important;       /* optional rounded corners */
+    border: none !important;  
 }
 .stAppHeader::before {
     content: "";
