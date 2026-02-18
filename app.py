@@ -99,6 +99,8 @@ if "refresh_key" not in st.session_state:
 
 st.title("Find Roundabouts Near You?")
 
+st.write(f"Data set contains locations of {df.shape[0]} roundabouts around the world")
+
 st.sidebar.header("Filter Options")
 
 style = st.sidebar.selectbox("Choose MAP STYLE", sorted(["OpenStreetMap", 'OpenTopoMap', 'Esri WorldStreetMap', "CartoDB positron"]))
